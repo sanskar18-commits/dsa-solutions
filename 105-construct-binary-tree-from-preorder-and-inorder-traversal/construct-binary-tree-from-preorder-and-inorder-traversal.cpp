@@ -11,40 +11,34 @@
  */
 class Solution {
 public:
-    int search(vector<int>& inorder,int val, int left, int right){
-        for(int i=left; i<= right; i++){
-            if(val == inorder[i]){
+
+    int search(vector<int>& inorder, int val, int l, int r){
+        for(int i=l; i<=r; i++){
+            if(inorder[i] == val){
                 return i;
             }
-
         }
         return -1;
     }
 
-    TreeNode* helper(vector<int>& preorder, vector<int>& inorder, int& preIdx, int l, int r) {
-        if(l > r){
-            return NULL;
-        }
+    TreeNode* helper(vector<int>& preorder, vector<int>& inorder, int& preIdx, int left, int right){
+
+        if(left > right) return NULL;
+
         TreeNode* root = new TreeNode(preorder[preIdx]);
         preIdx++;
 
+        int inIdx = search(inorder, preorder[preIdx-1], left, right);
 
-        int idIdx = search(inorder, preorder[preIdx-1],l,r);
+        root->left = helper(preorder, inorder, preIdx, left, inIdx-1);
+        root->right = helper(preorder, inorder, preIdx, inIdx+1, right);
 
-        root->left = helper(preorder, inorder, preIdx,l,idIdx-1);
-        root->right = helper(preorder, inorder, preIdx, idIdx+1, r);
-
-    return root;
-    
+        return root;
     }
 
-
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int preIdx = 0;
-
-        return helper(preorder, inorder,preIdx,0,inorder.size()-1);
-
-
-
+        int preIdx =0;
+        
+        return helper(preorder, inorder, preIdx,0,inorder.size()-1);
     }
 };
